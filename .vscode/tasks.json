@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "rust : build and test run",
+			"type": "cargo",
+			"command": "test",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
