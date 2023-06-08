@@ -11,6 +11,11 @@ use teemo::println;
 pub extern "C" fn _start() -> ! {
     println!("Hello World{}", "!");
 
+    teemo::init(); // new
+
+    // invoke a breakpoint exception
+    x86_64::instructions::interrupts::int3(); // new
+
     #[cfg(test)]
     test_main();
 

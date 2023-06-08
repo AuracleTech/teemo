@@ -2,9 +2,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "rust : build and test run",
+			"label": "rust : build and run",
 			"type": "cargo",
-			"command": "test",
+			"command": "run",
 			"group": {
 				"kind": "build",
 				"isDefault": true
