@@ -13,11 +13,19 @@ pub extern "C" fn _start() -> ! {
 
     teemo::init(); // new
 
+    // invoke a double fault exception
+    // fn stack_overflow() {
+    //     stack_overflow(); // for each recursion, the return address is pushed
+    // }
+    // stack_overflow();
+
     // invoke a breakpoint exception
-    x86_64::instructions::interrupts::int3(); // new
+    // x86_64::instructions::interrupts::int3(); // new
 
     #[cfg(test)]
     test_main();
+
+    println!("It did not crash!");
 
     loop {}
 }
