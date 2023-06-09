@@ -27,7 +27,12 @@ pub extern "C" fn _start() -> ! {
 
     println!("It did not crash!");
 
-    loop {}
+    loop {
+        use teemo::print;
+        for _ in 0..10000 {
+            print!("-");
+        }
+    }
 }
 
 /// This function is called on panic in non-test mode.
