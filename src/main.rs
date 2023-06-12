@@ -4,29 +4,46 @@
 #![test_runner(teemo::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use teemo::println;
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+entry_point!(kernel_main);
+
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use teemo::memory;
+    use x86_64::{structures::paging::Translate, VirtAddr};
+
     println!("Hello World{}", "!");
+    teemo::init();
 
-    teemo::init(); // new
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    // new: initialize a mapper
+    let mapper = unsafe { memory::init(phys_mem_offset) };
 
-    // invoke a double fault exception
-    // fn stack_overflow() {
-    //     stack_overflow(); // for each recursion, the return address is pushed
-    // }
-    // stack_overflow();
+    let addresses = [
+        // the identity-mapped vga buffer page
+        0xb8000,
+        // some code page
+        0x201008,
+        // some stack page
+        0x0100_0020_1a10,
+        // virtual address mapped to physical address 0
+        boot_info.physical_memory_offset,
+    ];
 
-    // invoke a breakpoint exception
-    // x86_64::instructions::interrupts::int3(); // new
+    for &address in &addresses {
+        let virt = VirtAddr::new(address);
+        // new: use the `mapper.translate_addr` method
+        let phys = mapper.translate_addr(virt);
+        println!("{:?} -> {:?}", virt, phys);
+    }
 
+    // as before
     #[cfg(test)]
     test_main();
 
     println!("It did not crash!");
-
     teemo::hlt_loop();
 }
 
