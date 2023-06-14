@@ -76,5 +76,6 @@ pub fn init_heap(
 }
 
 fn align_up(addr: usize, align: usize) -> usize {
-    (addr + align - 1) & !(align - 1)
+    // old function : (addr + align - 1) & !(align - 1)
+    (addr + align - 1) >> align << align
 }
